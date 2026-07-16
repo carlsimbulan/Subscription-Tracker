@@ -1,8 +1,8 @@
-import { TrendingUp, Clock, Info } from 'lucide-react'
+import { TrendingUp, Clock, Info, ArrowRight } from 'lucide-react'
 import AnalyticsChart from './AnalyticsChart.jsx'
 import { getDaysRemaining, toMonthly } from '../utils/dateHelpers.js'
 
-export default function DashboardPage({ subscriptions, sym }) {
+export default function DashboardPage({ subscriptions, sym, onNavigate }) {
   const totalMonthly = subscriptions.reduce(
     (sum, sub) => sum + toMonthly(sub.cost, sub.billingCycle),
     0
@@ -38,14 +38,20 @@ export default function DashboardPage({ subscriptions, sym }) {
         </div>
 
         {/* Active Subscriptions */}
-        <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6 flex flex-col justify-between">
-          <div className="flex items-center gap-2 text-sky-400">
-            <TrendingUp size={18} />
-            <p className="text-sm font-medium">Active Subscriptions</p>
+        <button
+          onClick={() => onNavigate('subscriptions')}
+          className="bg-gray-800/50 border border-gray-700 hover:border-sky-500/50 hover:bg-gray-800 rounded-2xl p-6 flex flex-col justify-between text-left transition group cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sky-400">
+              <TrendingUp size={18} />
+              <p className="text-sm font-medium">Active Subscriptions</p>
+            </div>
+            <ArrowRight size={15} className="text-gray-600 group-hover:text-sky-400 transition" />
           </div>
           <p className="text-4xl font-bold text-white mt-2">{subscriptions.length}</p>
           <p className="text-xs text-gray-400 mt-1">across all categories</p>
-        </div>
+        </button>
 
         {/* Due Soon */}
         <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6 flex flex-col justify-between">
@@ -63,6 +69,11 @@ export default function DashboardPage({ subscriptions, sym }) {
         <h2 className="text-base font-semibold text-white mb-4">Spend by Category</h2>
         <AnalyticsChart subscriptions={subscriptions} currencySymbol={sym} />
       </section>
+
+      {/* Footer */}
+      <footer className="text-center text-xs text-gray-600 pb-4">
+        © {new Date().getFullYear()} Carl Ivan Ken Simbulan. All rights reserved.
+      </footer>
     </main>
   )
 }

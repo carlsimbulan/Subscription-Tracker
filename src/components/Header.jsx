@@ -27,11 +27,14 @@ export default function Header({
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
-          {/* Logo */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Logo — click to go to dashboard */}
+          <button
+            onClick={() => onNavigate('dashboard')}
+            className="flex items-center gap-2 shrink-0 hover:opacity-80 transition"
+          >
             <CreditCard size={22} className="text-violet-400" />
             <span className="font-bold text-base tracking-tight">SubTracker</span>
-          </div>
+          </button>
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-1">
@@ -129,10 +132,13 @@ export default function Header({
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-700">
-          <div className="flex items-center gap-2">
+          <button
+            onClick={() => { onNavigate('dashboard'); setDrawerOpen(false) }}
+            className="flex items-center gap-2 hover:opacity-80 transition"
+          >
             <CreditCard size={18} className="text-violet-400" />
             <span className="font-bold text-sm">SubTracker</span>
-          </div>
+          </button>
           <button
             onClick={() => setDrawerOpen(false)}
             className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition"

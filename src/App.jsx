@@ -11,8 +11,21 @@ const CURRENCY_KEY = 'sub_tracker_currency'
 
 const CURRENCY_SYMBOLS = { USD: '$', PHP: '₱' }
 
+const ROUTE_MAP = {
+  '/dashboard': 'dashboard',
+  '/mysubscriptions': 'subscriptions',
+}
+const REVERSE_MAP = {
+  dashboard: '/dashboard',
+  subscriptions: '/mysubscriptions',
+}
+
+function getPageFromPath() {
+  return ROUTE_MAP[window.location.pathname] || 'dashboard'
+}
+
 export default function App() {
-  const [page, setPage] = useState('dashboard')
+  const [page, setPage] = useState(getPageFromPath)
 
   const [subscriptions, setSubscriptions] = useState(() => {
     try {
@@ -32,6 +45,21 @@ export default function App() {
   const importRef = useRef(null)
 
   const sym = CURRENCY_SYMBOLS[currency] ?? '$'
+
+  // Sync URL when page changes
+  useEffect(() => {
+    const path = REVERSE_MAP[page] || '/dashboard'
+    if (window.location.pathname !== path) {
+      window.history.pushState({ page }, '', path)
+    }
+  }, [page])
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const onPop = () => setPage(getPageFromPath())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   // Sync subscriptions
   useEffect(() => {
@@ -131,7 +159,7 @@ export default function App() {
       />
 
       {page === 'dashboard' && (
-        <DashboardPage subscriptions={subscriptions} sym={sym} />
+        <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
       )}
 
       {page === 'subscriptions' && (
