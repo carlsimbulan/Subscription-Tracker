@@ -111,6 +111,19 @@ export default function App() {
     setShowForm(true)
   }, [])
 
+  // --- Mark as Paid ---
+  const handleMarkPaid = useCallback((id) => {
+    const currentMonth = new Date().toISOString().slice(0, 7) // YYYY-MM
+    setSubscriptions((prev) =>
+      prev.map((s) => {
+        if (s.id !== id) return s
+        const paidMonths = s.paidMonths || []
+        if (paidMonths.includes(currentMonth)) return s
+        return { ...s, paidMonths: [...paidMonths, currentMonth] }
+      })
+    )
+  }, [])
+
   // --- Export ---
   const handleExport = () => {
     const blob = new Blob([JSON.stringify(subscriptions, null, 2)], { type: 'application/json' })
@@ -153,23 +166,27 @@ export default function App() {
         onNavigate={setPage}
         currency={currency}
         onCurrencyChange={setCurrency}
-        onAdd={handleAdd}
         onExport={handleExport}
         onImportClick={() => importRef.current?.click()}
       />
 
-      {page === 'dashboard' && (
-        <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
-      )}
+      {/* Offset content on desktop to account for fixed sidebar + top header */}
+      <div className="lg:pl-56 lg:pt-14">
+        {page === 'dashboard' && (
+          <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
+        )}
 
-      {page === 'subscriptions' && (
-        <SubscriptionsPage
-          subscriptions={subscriptions}
-          sym={sym}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      )}
+        {page === 'subscriptions' && (
+          <SubscriptionsPage
+            subscriptions={subscriptions}
+            sym={sym}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onMarkPaid={handleMarkPaid}
+            onAdd={handleAdd}
+          />
+        )}
+      </div>
 
       {showForm && (
         <SubscriptionForm

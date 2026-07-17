@@ -1,4 +1,4 @@
-import { TrendingUp, Clock, Info, ArrowRight } from 'lucide-react'
+import { TrendingUp, Clock, Info, ArrowRight, CheckCircle } from 'lucide-react'
 import AnalyticsChart from './AnalyticsChart.jsx'
 import { getDaysRemaining, toMonthly } from '../utils/dateHelpers.js'
 
@@ -13,6 +13,11 @@ export default function DashboardPage({ subscriptions, sym, onNavigate }) {
     return daysRemaining <= 7
   }).length
 
+  const currentMonth = new Date().toISOString().slice(0, 7)
+  const paidThisMonth = subscriptions.filter((sub) =>
+    (sub.paidMonths || []).includes(currentMonth)
+  ).length
+
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       {/* Data notice */}
@@ -25,9 +30,9 @@ export default function DashboardPage({ subscriptions, sym, onNavigate }) {
       </div>
 
       {/* Summary Banner */}
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Monthly Spend */}
-        <div className="sm:col-span-1 bg-gradient-to-br from-violet-600/20 to-violet-800/10 border border-violet-500/20 rounded-2xl p-6 flex flex-col justify-between">
+        <div className="bg-gradient-to-br from-violet-600/20 to-violet-800/10 border border-violet-500/20 rounded-2xl p-6 flex flex-col justify-between">
           <p className="text-sm text-violet-300 font-medium">Total Monthly Spend</p>
           <p className="text-4xl font-bold text-white mt-2">
             {sym}{totalMonthly.toFixed(2)}
@@ -61,6 +66,18 @@ export default function DashboardPage({ subscriptions, sym, onNavigate }) {
           </div>
           <p className="text-4xl font-bold text-white mt-2">{dueIn7Days}</p>
           <p className="text-xs text-gray-400 mt-1">upcoming renewals</p>
+        </div>
+
+        {/* Paid This Month */}
+        <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6 flex flex-col justify-between">
+          <div className="flex items-center gap-2 text-emerald-400">
+            <CheckCircle size={18} />
+            <p className="text-sm font-medium">Paid This Month</p>
+          </div>
+          <p className="text-4xl font-bold text-white mt-2">{paidThisMonth}</p>
+          <p className="text-xs text-gray-400 mt-1">
+            of {subscriptions.length} subscription{subscriptions.length !== 1 ? 's' : ''}
+          </p>
         </div>
       </section>
 
