@@ -4,6 +4,7 @@ import Header from './components/Header.jsx'
 import DashboardPage from './components/DashboardPage.jsx'
 import SubscriptionsPage from './components/SubscriptionsPage.jsx'
 import SubscriptionForm from './components/SubscriptionForm.jsx'
+import LandingPage from './components/LandingPage.jsx'
 import { getDaysRemaining } from './utils/dateHelpers.js'
 
 const STORAGE_KEY = 'sub_tracker_data'
@@ -21,6 +22,8 @@ const REVERSE_MAP = {
 }
 
 function getPageFromPath() {
+  // Show landing only on root '/' — all other paths go to their mapped page
+  if (window.location.pathname === '/') return 'landing'
   return ROUTE_MAP[window.location.pathname] || 'dashboard'
 }
 
@@ -48,6 +51,12 @@ export default function App() {
 
   // Sync URL when page changes
   useEffect(() => {
+    if (page === 'landing') {
+      if (window.location.pathname !== '/') {
+        window.history.pushState({ page }, '', '/')
+      }
+      return
+    }
     const path = REVERSE_MAP[page] || '/dashboard'
     if (window.location.pathname !== path) {
       window.history.pushState({ page }, '', path)
@@ -158,42 +167,52 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      {/* Hidden file input for import */}
-      <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+      {/* Landing page — shown before entering the app */}
+      {page === 'landing' && (
+        <LandingPage onGetStarted={() => setPage('dashboard')} />
+      )}
 
-      <Header
-        page={page}
-        onNavigate={setPage}
-        currency={currency}
-        onCurrencyChange={setCurrency}
-        onExport={handleExport}
-        onImportClick={() => importRef.current?.click()}
-      />
+      {/* App shell — shown once user is past landing */}
+      {page !== 'landing' && (
+        <>
+          {/* Hidden file input for import */}
+          <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 
-      {/* Offset content on desktop to account for fixed sidebar + top header */}
-      <div className="lg:pl-56 lg:pt-14">
-        {page === 'dashboard' && (
-          <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
-        )}
-
-        {page === 'subscriptions' && (
-          <SubscriptionsPage
-            subscriptions={subscriptions}
-            sym={sym}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onMarkPaid={handleMarkPaid}
-            onAdd={handleAdd}
+          <Header
+            page={page}
+            onNavigate={setPage}
+            currency={currency}
+            onCurrencyChange={setCurrency}
+            onExport={handleExport}
+            onImportClick={() => importRef.current?.click()}
           />
-        )}
-      </div>
 
-      {showForm && (
-        <SubscriptionForm
-          onSubmit={handleAddOrEdit}
-          onClose={() => { setShowForm(false); setEditingSubscription(null) }}
-          editingSubscription={editingSubscription}
-        />
+          {/* Offset content on desktop to account for fixed sidebar + top header */}
+          <div className="lg:pl-56 lg:pt-14">
+            {page === 'dashboard' && (
+              <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
+            )}
+
+            {page === 'subscriptions' && (
+              <SubscriptionsPage
+                subscriptions={subscriptions}
+                sym={sym}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onMarkPaid={handleMarkPaid}
+                onAdd={handleAdd}
+              />
+            )}
+          </div>
+
+          {showForm && (
+            <SubscriptionForm
+              onSubmit={handleAddOrEdit}
+              onClose={() => { setShowForm(false); setEditingSubscription(null) }}
+              editingSubscription={editingSubscription}
+            />
+          )}
+        </>
       )}
     </div>
   )
