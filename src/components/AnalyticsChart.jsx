@@ -68,12 +68,20 @@ export default function AnalyticsChart({ subscriptions, currencySymbol = '$' }) 
           </Pie>
           <Tooltip
             formatter={(value) => [`${currencySymbol}${value.toFixed(2)}/mo`, 'Spend']}
-            contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#f9fafb' }}
+            contentStyle={{
+              backgroundColor: 'var(--chart-tooltip-bg)',
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              color: 'var(--chart-tooltip-color)',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+            }}
           />
           <Legend
             iconType="circle"
             iconSize={10}
-            formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
+            formatter={(value) => (
+              <span style={{ color: 'var(--chart-tooltip-color)', fontSize: '0.875rem' }}>{value}</span>
+            )}
           />
         </PieChart>
       </ResponsiveContainer>

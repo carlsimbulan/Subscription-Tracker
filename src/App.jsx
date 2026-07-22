@@ -6,6 +6,7 @@ import SubscriptionsPage from './components/SubscriptionsPage.jsx'
 import SubscriptionForm from './components/SubscriptionForm.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import { getDaysRemaining } from './utils/dateHelpers.js'
+import { useTheme } from './hooks/useTheme.js'
 
 const STORAGE_KEY = 'sub_tracker_data'
 const CURRENCY_KEY = 'sub_tracker_currency'
@@ -22,12 +23,12 @@ const REVERSE_MAP = {
 }
 
 function getPageFromPath() {
-  // Show landing only on root '/' — all other paths go to their mapped page
   if (window.location.pathname === '/') return 'landing'
   return ROUTE_MAP[window.location.pathname] || 'dashboard'
 }
 
 export default function App() {
+  const { isDark, toggle: toggleTheme } = useTheme()
   const [page, setPage] = useState(getPageFromPath)
 
   const [subscriptions, setSubscriptions] = useState(() => {
@@ -122,7 +123,7 @@ export default function App() {
 
   // --- Mark as Paid ---
   const handleMarkPaid = useCallback((id) => {
-    const currentMonth = new Date().toISOString().slice(0, 7) // YYYY-MM
+    const currentMonth = new Date().toISOString().slice(0, 7)
     setSubscriptions((prev) =>
       prev.map((s) => {
         if (s.id !== id) return s
@@ -166,16 +167,19 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Landing page — shown before entering the app */}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
+      {/* Landing page */}
       {page === 'landing' && (
-        <LandingPage onGetStarted={() => setPage('dashboard')} />
+        <LandingPage
+          onGetStarted={() => setPage('dashboard')}
+          isDark={isDark}
+          onToggleTheme={toggleTheme}
+        />
       )}
 
-      {/* App shell — shown once user is past landing */}
+      {/* App shell */}
       {page !== 'landing' && (
         <>
-          {/* Hidden file input for import */}
           <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 
           <Header
@@ -185,9 +189,10 @@ export default function App() {
             onCurrencyChange={setCurrency}
             onExport={handleExport}
             onImportClick={() => importRef.current?.click()}
+            isDark={isDark}
+            onToggleTheme={toggleTheme}
           />
 
-          {/* Offset content on desktop to account for fixed sidebar + top header */}
           <div className="lg:pl-56 lg:pt-14">
             {page === 'dashboard' && (
               <DashboardPage subscriptions={subscriptions} sym={sym} onNavigate={setPage} />
