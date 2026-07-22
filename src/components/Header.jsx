@@ -1,133 +1,11 @@
 import { useState } from 'react'
 import {
-  CreditCard, LayoutDashboard, List, Download, Upload, Menu, X, Pencil, Check, Sun, Moon,
+  CreditCard, LayoutDashboard, List, Download, Upload, Menu, X, Sun, Moon, Home,
 } from 'lucide-react'
 
 const CURRENCIES = {
   USD: { label: 'USD ($)' },
   PHP: { label: 'PHP (₱)' },
-}
-
-const NAME_KEY = 'sub_tracker_name'
-
-function useName() {
-  const [name, setName] = useState(() => localStorage.getItem(NAME_KEY) || '')
-  const [editing, setEditing] = useState(false)
-  const [input, setInput] = useState(name)
-
-  const save = () => {
-    const trimmed = input.trim()
-    setName(trimmed)
-    localStorage.setItem(NAME_KEY, trimmed)
-    setEditing(false)
-  }
-
-  const handleKey = (e) => {
-    if (e.key === 'Enter') save()
-    if (e.key === 'Escape') { setInput(name); setEditing(false) }
-  }
-
-  return { name, editing, input, setInput, save, handleKey, startEditing: () => { setInput(name); setEditing(true) } }
-}
-
-function TopBarGreeting() {
-  const { name, editing, input, setInput, save, handleKey, startEditing } = useName()
-
-  if (editing) {
-    return (
-      <div className="flex items-center gap-2">
-        <input
-          autoFocus
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder="Enter your name"
-          className="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 w-44"
-        />
-        <button
-          onClick={save}
-          className="p-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white transition"
-          aria-label="Save name"
-        >
-          <Check size={14} />
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-500 dark:text-gray-400">Welcome,</span>
-      <span className="text-sm font-semibold text-gray-900 dark:text-white">
-        {name || <span className="text-gray-400 font-normal italic">set your name</span>}
-      </span>
-      <button
-        onClick={startEditing}
-        className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-        aria-label="Edit name"
-      >
-        <Pencil size={13} />
-      </button>
-    </div>
-  )
-}
-
-function SidebarGreeting() {
-  const { name, editing, input, setInput, save, handleKey, startEditing } = useName()
-
-  if (editing) {
-    return (
-      <div className="flex items-center gap-2 px-4 py-3 border-t border-gray-200 dark:border-gray-800 mt-auto">
-        <input
-          autoFocus
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder="Enter your name"
-          className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
-        />
-        <button
-          onClick={save}
-          className="p-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white transition"
-          aria-label="Save name"
-        >
-          <Check size={14} />
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-800 mt-auto">
-      <div className="min-w-0">
-        <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">Welcome,</p>
-        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-          {name || <span className="text-gray-400 font-normal italic">set your name</span>}
-        </p>
-      </div>
-      <button
-        onClick={startEditing}
-        className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0 ml-2"
-        aria-label="Edit name"
-      >
-        <Pencil size={13} />
-      </button>
-    </div>
-  )
-}
-
-function MobileTopGreeting() {
-  const [name] = useState(() => localStorage.getItem(NAME_KEY) || '')
-  return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <span className="text-sm text-gray-500 dark:text-gray-400">Welcome,</span>
-      <span className="text-sm font-semibold text-gray-900 dark:text-white">
-        {name || <span className="text-gray-400 font-normal italic">stranger</span>}
-      </span>
-    </div>
-  )
 }
 
 export default function Header({
@@ -154,16 +32,13 @@ export default function Header({
         <span className="text-sm font-semibold text-gray-900 dark:text-white capitalize">
           {page === 'subscriptions' ? 'Subscriptions' : 'Dashboard'}
         </span>
-        <div className="flex items-center gap-3">
-          <TopBarGreeting />
-          <button
-            onClick={onToggleTheme}
-            className="p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-        </div>
+        <button
+          onClick={onToggleTheme}
+          className="p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
       </header>
 
       {/* ── Mobile top header ── */}
@@ -264,7 +139,16 @@ export default function Header({
           </button>
         </div>
 
-        <SidebarGreeting />
+        {/* ── Back to Home — pinaka-baba ng sidebar ── */}
+        <div className="mt-auto px-3 py-4 border-t border-gray-200 dark:border-gray-800">
+          <button
+            onClick={() => onNavigate('landing')}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          >
+            <Home size={16} />
+            Back to Home
+          </button>
+        </div>
       </aside>
 
       {/* ── Mobile drawer overlay ── */}
@@ -281,8 +165,12 @@ export default function Header({
           drawerOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
+        {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-          <MobileTopGreeting />
+          <div className="flex items-center gap-2">
+            <CreditCard size={18} className="text-violet-500" />
+            <span className="font-bold text-sm tracking-tight">SubTracker</span>
+          </div>
           <button
             onClick={() => setDrawerOpen(false)}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
@@ -346,7 +234,16 @@ export default function Header({
           </button>
         </div>
 
-        <SidebarGreeting />
+        {/* ── Back to Home — pinaka-baba ng drawer ── */}
+        <div className="mt-auto px-3 py-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => { onNavigate('landing'); setDrawerOpen(false) }}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          >
+            <Home size={16} />
+            Back to Home
+          </button>
+        </div>
       </div>
     </>
   )
