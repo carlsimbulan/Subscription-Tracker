@@ -80,7 +80,6 @@ export default function LandingPage({ onGetStarted, isDark, onToggleTheme }) {
       <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CreditCard size={22} className="text-violet-500" />
             <span className="font-bold text-base tracking-tight">SubTracker</span>
           </div>
           <div className="flex items-center gap-2">

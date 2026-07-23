@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  CreditCard, LayoutDashboard, List, Download, Upload, Menu, X, Sun, Moon, Home,
+  LayoutDashboard, List, Download, Upload, Menu, X, Sun, Moon, Home,
 } from 'lucide-react'
 
 const CURRENCIES = {
@@ -46,9 +46,8 @@ export default function Header({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
           <button
             onClick={() => onNavigate('dashboard')}
-            className="flex items-center gap-2 shrink-0 hover:opacity-80 transition"
+            className="flex items-center shrink-0 hover:opacity-80 transition"
           >
-            <CreditCard size={22} className="text-violet-500" />
             <span className="font-bold text-base tracking-tight">SubTracker</span>
           </button>
 
@@ -76,9 +75,8 @@ export default function Header({
         {/* Logo */}
         <button
           onClick={() => onNavigate('dashboard')}
-          className="flex items-center gap-2.5 px-5 py-5 hover:opacity-80 transition shrink-0"
+          className="flex items-center px-5 py-5 hover:opacity-80 transition shrink-0"
         >
-          <CreditCard size={20} className="text-violet-500" />
           <span className="font-bold text-base tracking-tight">SubTracker</span>
         </button>
 
@@ -167,10 +165,7 @@ export default function Header({
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2">
-            <CreditCard size={18} className="text-violet-500" />
-            <span className="font-bold text-sm tracking-tight">SubTracker</span>
-          </div>
+          <span className="font-bold text-sm tracking-tight">SubTracker</span>
           <button
             onClick={() => setDrawerOpen(false)}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
